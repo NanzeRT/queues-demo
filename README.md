@@ -11,12 +11,14 @@
 
 ```
 Client -> Queue
-http://queue/queue/add_task
+POST http://queue/queue/add_task
+>>>
 { "submission_id": "arbitrary_id" }
 
 
 Worker -> Queue
-http://queue/queue/get_task
+GET http://queue/queue/get_task
+<<<
 {
     "id": "hex_generated_task_id",
     "submission_id": "arbitrary_id",
@@ -25,7 +27,8 @@ http://queue/queue/get_task
 // or
 null // when queue is empty
 
-http://queue/queue/submit_completed
+POST http://queue/queue/submit_completed
+>>>
 {
     "id": "hex_generated_task_id",
     "info": "arbitrary data"
@@ -33,12 +36,14 @@ http://queue/queue/submit_completed
 
 
 Queue -> Exploit storage
-http://exploit_storage/get_exploit/{submission_id}
+GET http://exploit_storage/get_exploit/{submission_id}
+<<<
 plain-text: exploit code or arbitraty data
 
 
 Queue -> Collector
-http://collector/submit
+POST http://collector/submit
+>>>
 {
     "submission_id": "arbitrary_id",
     "info": "arbitrary data"
