@@ -4,23 +4,19 @@ use anyhow::Result;
 use futures::future::try_join_all;
 use queues_demo::api::{QueueCompletedTask, QueueTask};
 use rand::random;
-use tokio::{sync::Semaphore, time::sleep};
+use tokio::time::sleep;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let limit = Semaphore::new(2);
-    let client = reqwest::Client::builder()
-        .pool_max_idle_per_host(10)
-        .build()?;
-    let workers = (0..10).map(|i| work(i, &client, &limit));
+    let workers = (0..10).map(work);
     try_join_all(workers).await?;
     Ok(())
 }
 
-async fn work(i: u32, client: &reqwest::Client, limit: &Semaphore) -> Result<()> {
+async fn work(i: u32) -> Result<()> {
+    let client = reqwest::Client::new();
     loop {
         let res: Option<QueueTask> = {
-            let _permit = limit.acquire().await?;
             client
                 .get("http://localhost:3000/queue/get_task")
                 .send()
