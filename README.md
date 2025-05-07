@@ -33,7 +33,7 @@ http://queue/queue/submit_completed
 
 
 Queue -> Exploit storage
-http://exploit_storage/get_exploit/{id}
+http://exploit_storage/get_exploit/{submission_id}
 plain-text: exploit code or arbitraty data
 
 
